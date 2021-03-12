@@ -6,4 +6,4 @@ def random_string():
 
 
 def test_random_string(random_string):
-  assert random_string == "lol"
+  assert random_string == "wololoooooo"
