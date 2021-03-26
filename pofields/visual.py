@@ -9,7 +9,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from mpl_toolkits.mplot3d import Axes3D
+import matplotlib as mpl
 
+from paths import ffmpeg
+
+mpl.rcParams['animation.ffmpeg_path'] = ffmpeg()
 #this will primarly increase relative size of text and window
 plt.rcParams["figure.figsize"] = (8, 4.5)
 plt.rcParams["figure.dpi"] = 200
@@ -27,6 +31,7 @@ class visual:
         self.ax.set_xlim([-5, 5])
         self.ax.set_ylim([-5, 5])
         self.ax.set_zlim([-5, 5])
+        self.progressbar = False
 
     
     
@@ -56,9 +61,10 @@ class visual:
 
         
     def _update_animation(self, i):
+        if self.progressbar:
+            print("#",end="")
         print(i)
         for plot, s in zip(self.plots, self.spaceships):
-            print(type(plot))
             plot.set_data(s[0, :i], s[1, :i])
             plot.set_3d_properties(s[2, :i])
             
@@ -71,9 +77,16 @@ class visual:
         
         
         
-    def save_ani(self):
-        writergif = animation.PillowWriter(fps=30) 
-        self.anim.save("asd.gif", writer=writergif)
+    def save_ani(self, file_type):
+        if file_type == "gif":
+            writer_gif = animation.PillowWriter(fps=30) 
+            self.anim.save("asd.mp4", writer=writer_gif)
+        elif file_type == "mp4":
+            print("Saving animation in progress...")
+            print("[" + "-"*25 + "]")
+            writer_video = animation.FFMpegWriter(fps=60)
+            self.anim.save("asd.mp4", writer=writer_video)
+        
 
 if __name__ == "__main__":
     def get_planets_spaceships(no_of_planets):
@@ -106,7 +119,7 @@ if __name__ == "__main__":
     # Visual.show_plot()
     # Visual.animate_3d()
     Visual.start()
-    # Visual.save_ani()
+    Visual.save_ani("mp4")
     # plt.show()
     
     
