@@ -77,13 +77,9 @@ class Spacecraft(Object):
         
         return cap(v)
         
-    def velocity_to_goal(self, position, mode="uniform"):
-        dist = np.linalg.norm(self.goal - position)
-        if mode == "uniform":
-            v = self.vmax * (self.goal - position)/dist
-        elif mode == "parabolic":
-            v = dist**2 * (self.goal - position)/dist
-        return v
+    def velocity_to_goal(self, position):
+        return self.vmax * np.linalg.norm(self.goal - position)
+
     
     def velocity_from_obstacles(self, position):
         v = np.zeros(2)
