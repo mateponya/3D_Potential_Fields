@@ -106,7 +106,7 @@ if __name__ == "__main__":
     # Visual.show_plot()
     # Visual.animate_3d()
     Visual.start()
-    Visual.save_ani()
+    # Visual.save_ani()
     # plt.show()
     
     
