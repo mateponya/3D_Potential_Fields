@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib as mpl
+from progressbar.bar import ProgressBar as progressbar
 
 from paths import ffmpeg
 
@@ -31,7 +32,7 @@ class visual:
         self.ax.set_xlim([-5, 5])
         self.ax.set_ylim([-5, 5])
         self.ax.set_zlim([-5, 5])
-        self.progressbar = False
+        self.show_progressbar = False
 
     
     
@@ -61,9 +62,8 @@ class visual:
 
         
     def _update_animation(self, i):
-        if self.progressbar:
-            print("#",end="")
-        print(i)
+        if self.show_progressbar:
+            self.bar.update(i+1)
         for plot, s in zip(self.plots, self.spaceships):
             plot.set_data(s[0, :i], s[1, :i])
             plot.set_3d_properties(s[2, :i])
@@ -78,14 +78,21 @@ class visual:
         
         
     def save_ani(self, file_type):
+        if file_type not in ["gif", "mp4"]:
+            print("Give anothet file format")
+            return 0
+        print("Saving animation in progress...")
+        self.show_progressbar = True
+        self.bar = progressbar(max_value=self.spaceships.shape[-1]).start()
         if file_type == "gif":
             writer_gif = animation.PillowWriter(fps=30) 
             self.anim.save("asd.mp4", writer=writer_gif)
         elif file_type == "mp4":
-            print("Saving animation in progress...")
-            print("[" + "-"*25 + "]")
             writer_video = animation.FFMpegWriter(fps=60)
             self.anim.save("asd.mp4", writer=writer_video)
+            self.show_progressbar = False
+            self.bar.finish()
+        print("Animation saved as: TBD")
         
 
 if __name__ == "__main__":
