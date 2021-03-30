@@ -35,13 +35,12 @@ class visual:
         self.show_progressbar = False
 
     
-    
-    def show_plot(self):
-        self.plot_planets()
-        self.plot_spaceships()
+    def _plot(self):
+        self._plot_planets()
+        self._plot_spaceships()
         
 
-    def plot_planets(self):
+    def _plot_planets(self):
         theta = np.linspace(0, 2*np.pi, 10)
         phi = np.linspace(0, np.pi, 10)
         theta, phi = np.meshgrid(theta, phi)
@@ -54,24 +53,36 @@ class visual:
     
     
     
-    def plot_spaceships(self):
-        self.plot_planets()
+    def _plot_spaceships(self):
+        self._plot_planets()
         # self.ax.scatter(spaceships["x"], spaceships["y"], spaceships["z"], c="green", s=40)
         [self.ax.plot(spaceship[0], spaceship[1], spaceship[2]) for spaceship in self.spaceships]
 
 
         
     def _update_animation(self, i):
+        self.number = 20
+        start_plot_number = i - self.number
+        if start_plot_number < 0:
+            start_plot_number = 0
+
+            
+            
         if self.show_progressbar:
             self.bar.update(i+1)
-        for plot, s in zip(self.plots, self.spaceships):
-            plot.set_data(s[0, :i], s[1, :i])
-            plot.set_3d_properties(s[2, :i])
+        for plot, s in zip(self.plots_spaceship, self.spaceships):
+            plot.set_data(s[0, start_plot_number:i+1], s[1, start_plot_number:i+1])
+            plot.set_3d_properties(s[2, start_plot_number:i+1])
             
+        for scatter, s in zip(self.scatters_spaceship, self.spaceships):
+            scatter._offsets3d = [[s[0, i]], [s[1, i]], [s[2, i]]]
+            # scatter.set_3d_properties(s[2, start_plot_number:i])
+
             
-    def start(self):
-        self.plot_planets()
-        self.plots = [self.ax.plot(s[0, 0:2], s[1, 0:2], s[2, 0:2])[0] for s in self.spaceships]
+    def animation(self):
+        self._plot_planets()
+        self.plots_spaceship = [self.ax.plot(s[0, 0:1], s[1, 0:1], s[2, 0:1])[0] for s in self.spaceships]
+        self.scatters_spaceship = [self.ax.scatter(s[0, 0], s[1, 0], s[2, 0]) for s in self.spaceships]
         self.anim = animation.FuncAnimation(self.fig, self._update_animation,
                                             frames=self.spaceships.shape[-1], interval=50, blit=False)
         
@@ -83,7 +94,7 @@ class visual:
             return 0
         print("Saving animation in progress...")
         self.show_progressbar = True
-        self.bar = progressbar(max_value=self.spaceships.shape[-1]).start()
+        self.bar = progressbar(max_value=self.spaceships.shape[-1]).animation()
         if file_type == "gif":
             writer_gif = animation.PillowWriter(fps=30) 
             self.anim.save("asd.mp4", writer=writer_gif)
@@ -96,6 +107,7 @@ class visual:
         
 
 if __name__ == "__main__":
+    import time
     def get_planets_spaceships(no_of_planets):
         x = np.random.normal(scale=1.5, size=no_of_planets)
         y = np.random.normal(scale=1.5, size=no_of_planets)
@@ -123,11 +135,13 @@ if __name__ == "__main__":
     [planets, spaceships] = get_planets_spaceships(10)
 
     Visual = visual(planets, spaceships)
-    # Visual.show_plot()
+    # Visual._plot()
     # Visual.animate_3d()
-    Visual.start()
-    Visual.save_ani("mp4")
+    Visual.animation()
+    # Visual.save_ani("mp4")
     # plt.show()
+    time.sleep(2)
+
     
     
     
