@@ -10,8 +10,11 @@ import numpy as np
 from scipy.stats import norm
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-import matplotlib as mpl 
-mpl.rcParams['animation.ffmpeg_path'] = r"C:\\Users\\Mate\\Desktop\\ffmpeg.exe"
+# import matplotlib as mpl 
+# mpl.rcParams['animation.ffmpeg_path'] = r"C:\\Users\\Mate\\Desktop\\ffmpeg.exe"
+from paths import ffmpeg
+import matplotlib as mpl
+mpl.rcParams['animation.ffmpeg_path'] = ffmpeg()
 import time
 
 WALL_OFFSET = 2.
@@ -78,7 +81,8 @@ class Spacecraft(Object):
         return cap(v)
         
     def velocity_to_goal(self, position):
-        return self.vmax * np.linalg.norm(self.goal - position)
+        dist = np.linalg.norm(self.goal - position)
+        return self.vmax * (self.goal - position)/dist
 
     
     def velocity_from_obstacles(self, position):
