@@ -29,16 +29,17 @@ class visual:
     def __init__(self, trajectories,
                  names,
                  colors,
-                 size,
+                 sizes,
                  quality=8,
-                 save_animation=False):
+                 save_animation=False,
+                 trace_length=-1):
         
         self.trajectories = trajectories
         self.names = names
         self.colors = colors
-        self.size = size
+        self.sizes = sizes
         self.quality = quality
-        self.number = 50
+        self.trace_length = trace_length
         self.animation_frames = self.trajectories.shape[-1]
         
         self.fig = plt.figure()
@@ -61,15 +62,15 @@ class visual:
 
     
 
-    def _plot_planets(self, i):
+    def _plot_objects(self, i):
         theta = np.linspace(0, 2*np.pi, self.quality)
         phi = np.linspace(0, np.pi, self.quality)
         theta, phi = np.meshgrid(theta, phi)
         plots_objects = []
-        for j in range(len(self.size)):
-            coords = np.array([self.size[j]*np.cos(theta)*np.sin(phi) + self.trajectories[j, 0, i],
-                               self.size[j]*np.sin(theta)*np.sin(phi) + self.trajectories[j, 1, i],
-                               self.size[j]*np.cos(phi) + self.trajectories[j, 2, i]])
+        for j in range(len(self.sizes)):
+            coords = np.array([self.sizes[j]*np.cos(theta)*np.sin(phi) + self.trajectories[j, 0, i],
+                               self.sizes[j]*np.sin(theta)*np.sin(phi) + self.trajectories[j, 1, i],
+                               self.sizes[j]*np.cos(phi) + self.trajectories[j, 2, i]])
 
 
             
@@ -78,13 +79,19 @@ class visual:
     
             
     def start_animation(self):
-        self.plots_objects = self._plot_planets(0)
+        self.plots_objects = self._plot_objects(0)
         self.plots_trajectories = [self.ax.plot(s[0, 0:1], s[1, 0:1], s[2, 0:1], c=self.colors[i], alpha=.2)[0] for i, s in enumerate(self.trajectories)]
         self.plot_timer = self.ax.text2D(0.05, 0.95, "2D Text", transform=self.ax.transAxes)
+        self.texts = [self.ax.text(s[0, 0], s[1, 0], s[2, 0], name,
+                                   color=self.colors[i],
+                                   transform=self.ax.transData + mpl.transforms.ScaledTranslation(0, r/4, self.fig.dpi_scale_trans),
+                                   horizontalalignment='center',
+                                   verticalalignment='bottom') for i, (s, r, name) in enumerate(zip(self.trajectories, self.sizes, self.names))]
         self.fig.show()
         self.anim = animation.FuncAnimation(self.fig, self._update_animation,
                                             frames=self.trajectories.shape[-1], interval=50, blit=False, repeat=True)
-      
+
+
         
     def _update_animation(self, i):
         
@@ -92,26 +99,31 @@ class visual:
             self.bar.update(i+1)
 
         
-        tail_start_frame = i - self.number
-        if tail_start_frame < 0 or self.number == -1:
+        tail_start_frame = i - self.trace_length
+        if tail_start_frame < 0 or self.trace_length == -1:
             tail_start_frame = 0
         
         self.plot_timer.set_text("Animation frame: {}/{}".format(i, self.animation_frames))
 
             
 
-        for plot, s in zip(self.plots_trajectories, self.trajectories):
+        for plot, s, txt in zip(self.plots_trajectories, self.trajectories, self.texts):
             plot.set_data(s[0, tail_start_frame:i+1], s[1, tail_start_frame:i+1])
             plot.set_3d_properties(s[2, tail_start_frame:i+1])
+            txt.set_position([s[0, i], s[1, i]])
+            txt.set_3d_properties(s[2, i], zdir=None)
         
         for pp in self.plots_objects:
             pp.remove()
-        self.plots_objects = self._plot_planets(i)
+            
+
+        
+        self.plots_objects = self._plot_objects(i)
 
   
         
         
-    def save_ani(self, file_type="gif"):
+    def save_ani(self, file_type="mp4"):
         if file_type not in ["gif", "mp4"]:
             print("Give anothet file format")
             return 0
@@ -133,34 +145,20 @@ class visual:
         
 
 if __name__ == "__main__":
-    import scenarios
-    trajectories = scenarios.simple_spaceships()
-    colors = np.array(["green", "blue"])
-    names = np.array(["Green1", "Blue2"])
-    size = np.array([.5, .5])
-    
-    planets_raw = scenarios.mini_solar()
-    trajectories = np.append(trajectories, list(map(lambda e: e["data"].transpose(), planets_raw)), axis=0)
-    size = np.append(size, list(map(lambda e: e["r"], planets_raw)))
-    colors = np.append(colors, list(map(lambda e: e["color"], planets_raw)))
-    names = np.append(names, list(map(lambda e: e["name"], planets_raw)))
+    import visual_demo
 
-
-
+    (trajectories, names, colors, sizes) = visual_demo.solar()
+    print(colors.shape)
     
 
 
-    Visual = visual(trajectories,
-                    names,
-                    colors,
-                    size)
+    Visual = visual(trajectories, # shape: (no_of_objects, 3, no_of_frames)
+                    names, # shape: (no_of_objects)
+                    colors, # shape: (no_of_objects)
+                    sizes, # shape: (no_of_objects)
+                    quality=8, # try 8 for low and 20 for high quality spheres
+                    save_animation=False,
+                    trace_length=-1) # tail length in frames (0 for none and -1 for all)
 
-
-    # Visual.save_ani("mp4")
-    # Visual.save_ani("gif")
-
-
-    
-    
-    
-
+                        
+                        

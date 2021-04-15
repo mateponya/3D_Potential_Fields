@@ -41,21 +41,7 @@ def planet_data2(r, r2=0):
               elevation*np.cos(start2 + w2*t)])
     return p_data.transpose()
 
-# from mpl_toolkits.mplot3d import Axes3D
-# fig = plt.figure()
-# ax = Axes3D(fig, proj_type="persp") # alternative is "ortho"
-# a=planet_data(.7)
-# b=planet_data(1)
-# c=planet_data2(1.5, .3)
-# d=planet_data(1.7)
-# # print(a.shape)
-# ax.scatter(*a.transpose())
-# ax.scatter(*b.transpose())
-# ax.scatter(*c.transpose())
-# ax.scatter(*d.transpose())
 
-# import sys
-# sys.exit()
 
 def mini_solar():
     planets = []
@@ -171,17 +157,22 @@ def simple_spaceships():
     return spaceships
 
 
+def solar():
+
+    trajectories = simple_spaceships()
+    colors = np.array(["green", "blue"])
+    names = np.array(["Green1", "Blue2"])
+    sizes = np.array([.5, .5])
+    
+    planets_raw = mini_solar()
+    trajectories = np.append(trajectories, list(map(lambda e: e["data"].transpose(), planets_raw)), axis=0)
+    sizes = np.append(sizes, list(map(lambda e: e["r"], planets_raw)))
+    colors = np.append(colors, list(map(lambda e: e["color"], planets_raw)))
+    names = np.append(names, list(map(lambda e: e["name"], planets_raw)))
+    
+    return trajectories, names, colors, sizes
 
 
-
-    # COLOURS = np.array(["blue",
-    #               "magenta",
-    #               "cyan",
-    #               "orange",
-    #               "lime",
-    #               "darkgreen",
-    #               "yellow",
-    #               "red"])
 
 
 
