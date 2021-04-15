@@ -26,21 +26,21 @@ plt.rcParams["figure.dpi"] = 200
     
 class visual:
     
-    def __init__(self, trajectories_planets,
-                 trajectories_spaceships,
-                 names_planets,
-                 names_spaceships,
-                 colors_planets,
-                 colors_spaceships,
-                 r_planets):
+    def __init__(self, trajectories,
+                 names,
+                 colors,
+                 sizes,
+                 quality=8,
+                 save_animation=False,
+                 trace_length=-1):
         
-        self.trajectories_planets = trajectories_planets
-        self.trajectories_spaceships = trajectories_spaceships
-        self.names_planets = names_planets
-        self.names_spaceships = names_spaceships
-        self.colors_planets = colors_planets
-        self.colors_spaceships = colors_spaceships
-        self.r_planets = r_planets
+        self.trajectories = trajectories
+        self.names = names
+        self.colors = colors
+        self.sizes = sizes
+        self.quality = quality
+        self.trace_length = trace_length
+        self.animation_frames = self.trajectories.shape[-1]
         
         self.fig = plt.figure()
         self.ax = Axes3D(self.fig, proj_type="persp") # alternative is "ortho"
@@ -54,86 +54,83 @@ class visual:
         self.ax.set_zlabel('Z axis')
         
         self.show_progressbar = False
+        
+        
+        self.start_animation()
+        if save_animation:
+            self.save_ani()
 
     
 
-    def _plot_planets(self, i, quality=8):
-        theta = np.linspace(0, 2*np.pi, quality)
-        phi = np.linspace(0, np.pi, quality)
+    def _plot_objects(self, i):
+        theta = np.linspace(0, 2*np.pi, self.quality)
+        phi = np.linspace(0, np.pi, self.quality)
         theta, phi = np.meshgrid(theta, phi)
-        plots_planets = []
-        for j in range(len(self.r_planets)):
-            coords = np.array([self.r_planets[j]*np.cos(theta)*np.sin(phi) + self.trajectories_planets[j, 0, i],
-                               self.r_planets[j]*np.sin(theta)*np.sin(phi) + self.trajectories_planets[j, 1, i],
-                               self.r_planets[j]*np.cos(phi) + self.trajectories_planets[j, 2, i]])
+        plots_objects = []
+        for j in range(len(self.sizes)):
+            coords = np.array([self.sizes[j]*np.cos(theta)*np.sin(phi) + self.trajectories[j, 0, i],
+                               self.sizes[j]*np.sin(theta)*np.sin(phi) + self.trajectories[j, 1, i],
+                               self.sizes[j]*np.cos(phi) + self.trajectories[j, 2, i]])
 
 
             
-            plots_planets.append(self.ax.plot_surface(*coords, color=self.colors_planets[j]))
-        return plots_planets
+            plots_objects.append(self.ax.plot_surface(*coords, color=self.colors[j]))
+        return plots_objects
     
             
-    def animation(self, quality=8):
-        self.plots_planets = self._plot_planets(0, quality=quality)
-        self.plots_spaceship = [self.ax.plot(s[0, 0:1], s[1, 0:1], s[2, 0:1], c=self.colors_spaceships[i], alpha=.2)[0] for i, s in enumerate(self.trajectories_spaceships)]
-        self.scatters_spaceship = [self.ax.scatter(s[0, 0], s[1, 0], s[2, 0], c=self.colors_spaceships[i]) for i, s in enumerate(self.trajectories_spaceships)]
-        self.texts = [self.ax.text(s[0, 0], s[1, 0], s[2, 0], "red", color=self.colors_spaceships[i], horizontalalignment='left', verticalalignment='bottom') for i, s in enumerate(self.trajectories_spaceships)]
+    def start_animation(self):
+        self.plots_objects = self._plot_objects(0)
+        self.plots_trajectories = [self.ax.plot(s[0, 0:1], s[1, 0:1], s[2, 0:1], c=self.colors[i], alpha=.2)[0] for i, s in enumerate(self.trajectories)]
         self.plot_timer = self.ax.text2D(0.05, 0.95, "2D Text", transform=self.ax.transAxes)
+        self.texts = [self.ax.text(s[0, 0], s[1, 0], s[2, 0], name,
+                                   color=self.colors[i],
+                                   transform=self.ax.transData + mpl.transforms.ScaledTranslation(0, r/4, self.fig.dpi_scale_trans),
+                                   horizontalalignment='center',
+                                   verticalalignment='bottom') for i, (s, r, name) in enumerate(zip(self.trajectories, self.sizes, self.names))]
         self.fig.show()
         self.anim = animation.FuncAnimation(self.fig, self._update_animation,
-                                            frames=self.trajectories_spaceships.shape[-1], interval=50, blit=False, repeat=True)
-      
+                                            frames=self.trajectories.shape[-1], interval=50, blit=False, repeat=True)
+
+
         
     def _update_animation(self, i):
         
         if self.show_progressbar:
             self.bar.update(i+1)
 
-        self.number = 20
-        start_plot_number = i - self.number
-        if start_plot_number < 0 or self.number == -1:
-            start_plot_number = 0
         
-        self.plot_timer.set_text("Animation frame: {}".format(i))
+        tail_start_frame = i - self.trace_length
+        if tail_start_frame < 0 or self.trace_length == -1:
+            tail_start_frame = 0
+        
+        self.plot_timer.set_text("Animation frame: {}/{}".format(i, self.animation_frames))
 
             
 
-        for plot, s in zip(self.plots_spaceship, self.trajectories_spaceships):
-            plot.set_data(s[0, start_plot_number:i+1], s[1, start_plot_number:i+1])
-            plot.set_3d_properties(s[2, start_plot_number:i+1])
-        # self.ax.clear()
-        # self._plot_planets()
-        for scatter, s, txt in zip(self.scatters_spaceship, self.trajectories_spaceships, self.texts):
-            scatter._offsets3d = [[s[0, i]], [s[1, i]], [s[2, i]]]
-            # print(txt)
-            # if txt.get_text() == "red":
+        for plot, s, txt in zip(self.plots_trajectories, self.trajectories, self.texts):
+            plot.set_data(s[0, tail_start_frame:i+1], s[1, tail_start_frame:i+1])
+            plot.set_3d_properties(s[2, tail_start_frame:i+1])
             txt.set_position([s[0, i], s[1, i]])
             txt.set_3d_properties(s[2, i], zdir=None)
-                # txt.remove()
         
-        for pp in self.plots_planets:
+        for pp in self.plots_objects:
             pp.remove()
-        self.plots_planets = self._plot_planets(i)
             
-        # for plot in self.plots_planets:
-        #     plot.remove()
-        #     plot = self.ax.plot_surface(x, y, z, color="lightcoral")
-            
-        # self.ax.cla()
-        # self._plot_planets()
-        # return self.scatters_spaceship, self.plots_spaceship
+
+        
+        self.plots_objects = self._plot_objects(i)
 
   
         
         
-    def save_ani(self, file_type):
+    def save_ani(self, file_type="mp4"):
         if file_type not in ["gif", "mp4"]:
             print("Give anothet file format")
             return 0
         print("Saving animation in progress...")
         save_name = "animation_" + datetime.datetime.now().strftime("%y%m%d_%H%M.") + file_type
         self.show_progressbar = True
-        self.bar = progressbar(max_value=self.trajectories_spaceships.shape[-1])
+        self.bar = progressbar(max_value=self.animation_frames)
         if file_type == "gif":
             writer = animation.PillowWriter(fps=20)
         elif file_type == "mp4":
@@ -148,35 +145,20 @@ class visual:
         
 
 if __name__ == "__main__":
-    import world_maker
-    trajectories_spaceships= world_maker.simple_spaceships()
-    colors_spaceships = np.array(["green", "blue"])
-    names_spaceships= np.array(["Green1", "Blue2"])
-    
-    planets_raw = world_maker.mini_solar()
-    trajectories_planets = np.array(list(map(lambda e: e["data"].transpose(), planets_raw)))
-    r_planets = np.array(list(map(lambda e: e["r"], planets_raw)))
-    colors_planets = np.array(list(map(lambda e: e["color"], planets_raw)))
-    names_planets = np.array(list(map(lambda e: e["name"], planets_raw)))
+    import visual_demo
 
-
-
-
-    Visual = visual(trajectories_planets,
-                    trajectories_spaceships,
-                    names_planets,
-                    names_spaceships,
-                    colors_planets,
-                    colors_spaceships,
-                    r_planets)
-    Visual.animation(8)
-
-
-    # Visual.save_ani("mp4")
-    # Visual.save_ani("gif")
-
-
-    
-    
+    (trajectories, names, colors, sizes) = visual_demo.solar()
+    print(colors.shape)
     
 
+
+    Visual = visual(trajectories, # shape: (no_of_objects, 3, no_of_frames)
+                    names, # shape: (no_of_objects)
+                    colors, # shape: (no_of_objects)
+                    sizes, # shape: (no_of_objects)
+                    quality=8, # try 8 for low and 20 for high quality spheres
+                    save_animation=False,
+                    trace_length=-1) # tail length in frames (0 for none and -1 for all)
+
+                        
+                        
