@@ -30,6 +30,8 @@ class visual:
                  names,
                  colors,
                  sizes,
+                 goals,
+                 colors_goals,
                  quality=8,
                  save_animation=False,
                  trace_length=-1):
@@ -39,6 +41,8 @@ class visual:
         self.colors = colors
         self.sizes = sizes
         self.quality = quality
+        self.goals = goals
+        self.colors_goals = colors_goals
         self.trace_length = trace_length
         self.animation_frames = self.trajectories.shape[-1]
         
@@ -87,6 +91,7 @@ class visual:
                                    transform=self.ax.transData + mpl.transforms.ScaledTranslation(0, r/4, self.fig.dpi_scale_trans),
                                    horizontalalignment='center',
                                    verticalalignment='bottom') for i, (s, r, name) in enumerate(zip(self.trajectories, self.sizes, self.names))]
+        self.scatters_goals = [self.ax.scatter(s[0], s[1], s[2], c=self.colors_goals[i]) for i, s in enumerate(self.goals)]
         self.fig.show()
         self.anim = animation.FuncAnimation(self.fig, self._update_animation,
                                             frames=self.trajectories.shape[-1], interval=50, blit=False, repeat=True)
@@ -148,14 +153,15 @@ if __name__ == "__main__":
     import visual_demo
 
     (trajectories, names, colors, sizes) = visual_demo.solar()
-    print(colors.shape)
-    
-
+    goals = np.array([[1,1,1], [2,2,2]])
+    colors_goals = np.array(["red", "black"])
 
     Visual = visual(trajectories, # shape: (no_of_objects, 3, no_of_frames)
                     names, # shape: (no_of_objects)
                     colors, # shape: (no_of_objects)
                     sizes, # shape: (no_of_objects)
+                    goals, # shape: (no_of_goals, 3)
+                    colors_goals, # shape: (no_of_goals)
                     quality=8, # try 8 for low and 20 for high quality spheres
                     save_animation=False,
                     trace_length=-1) # tail length in frames (0 for none and -1 for all)
