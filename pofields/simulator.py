@@ -10,8 +10,9 @@ from scipy.stats import norm
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.animation as animation
-import matplotlib as mpl 
-mpl.rcParams['animation.ffmpeg_path'] = r"C:\\Users\\Mate\\Desktop\\ffmpeg.exe"
+import matplotlib as mpl
+from locators import ffmpeg_file_location
+mpl.rcParams['animation.ffmpeg_path'] = ffmpeg_file_location()
 import time
 
 WALL_OFFSET = 2.

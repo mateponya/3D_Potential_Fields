@@ -8,17 +8,15 @@ Created on Sat Mar 27 00:22:19 2021
 import os
 
 
-def main_dir():
+def main_dir_location():
     return os.getcwd()
 
-def parent_dir():
-    a = main_dir()
+def parent_dir_location():
+    a = main_dir_location()
     a = a[:a.rfind("\\")]
     return a
 
-def ffmpeg():
-    return parent_dir() + "\\bin\\ffmpeg.exe"
+def ffmpeg_file_location():
+    return parent_dir_location() + "\\bin\\ffmpeg.exe"
 
 
-if __name__ == "__main__":
-    print(ffmpeg())

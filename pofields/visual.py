@@ -12,10 +12,10 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib as mpl
 from progressbar.bar import ProgressBar as progressbar
 
-from paths import ffmpeg, parent_dir
+from locators import ffmpeg_file_location, parent_dir_location
 import datetime
 
-mpl.rcParams['animation.ffmpeg_path'] = ffmpeg()
+mpl.rcParams['animation.ffmpeg_path'] = ffmpeg_file_location()
 #this will primarly increase relative size of text and window
 plt.rcParams["figure.figsize"] = (8, 4.5)
 plt.rcParams["figure.dpi"] = 200
@@ -141,11 +141,11 @@ class visual:
         elif file_type == "mp4":
             writer = animation.FFMpegWriter(fps=20)
             
-        self.anim.save(parent_dir() + "\\" + save_name, writer=writer)
+        self.anim.save(parent_dir_location() + "\\" + save_name, writer=writer)
         self.show_progressbar = False
         self.bar.finish()
         print("Animation saved as: " + save_name)
-        print("In main folder: " + parent_dir())
+        print("In main folder: " + parent_dir_location())
         
         
 
