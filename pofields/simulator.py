@@ -164,7 +164,7 @@ class Universe:
         names = list(obj.name for obj in Universe.objects)
         cmap = plt.cm.get_cmap('Paired')
         N = len(Universe.objects)-1
-        colors = list(cmap(n/N) for n in range(N))
+        colors = list(cmap(n/N) for n in range(N+1))
         sizes = list(obj.radius for obj in Universe.objects)
         goals = np.vstack(list(obj.goal for obj in Universe.objects))
         colors_goals = colors.copy()

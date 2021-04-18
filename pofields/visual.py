@@ -24,7 +24,7 @@ plt.rcParams["figure.dpi"] = 200
 
 
     
-class visual:
+class Visual:
     
     def __init__(self, trajectories,
                  names,
@@ -34,9 +34,10 @@ class visual:
                  colors_goals,
                  quality=8,
                  save_animation=False,
-                 trace_length=-1):
+                 trace_length=-1,
+                 speed=1):
         
-        self.trajectories = trajectories
+        self.trajectories = trajectories[:, :, ::speed]
         self.names = names
         self.colors = colors
         self.sizes = sizes
@@ -44,10 +45,13 @@ class visual:
         self.goals = goals
         self.colors_goals = colors_goals
         self.trace_length = trace_length
+        # self.speed = int(speed)
         self.animation_frames = self.trajectories.shape[-1]
+        # print(self.animation_frames)
+        # print(self.trajectories.shape, trajectories.shape)
         
         self.fig = plt.figure()
-        self.ax = Axes3D(self.fig, proj_type="persp") # alternative is "ortho"
+        self.ax = Axes3D(self.fig, proj_type="ortho") # "ortho" or "persp"
         
         self.ax.set_xlim([-5, 5])
         self.ax.set_ylim([-5, 5])
@@ -78,20 +82,20 @@ class visual:
 
 
             
-            plots_objects.append(self.ax.plot_surface(*coords, color=self.colors[j]))
+            plots_objects.append(self.ax.plot_surface(*coords, color=self.colors[j], alpha=.5))
         return plots_objects
     
             
     def start_animation(self):
         self.plots_objects = self._plot_objects(0)
-        self.plots_trajectories = [self.ax.plot(s[0, 0:1], s[1, 0:1], s[2, 0:1], c=self.colors[i], alpha=.2)[0] for i, s in enumerate(self.trajectories)]
+        self.plots_trajectories = [self.ax.plot(s[0, 0:1], s[1, 0:1], s[2, 0:1], color=self.colors[i], alpha=.7)[0] for i, s in enumerate(self.trajectories)]
         self.plot_timer = self.ax.text2D(0.05, 0.95, "2D Text", transform=self.ax.transAxes)
         self.texts = [self.ax.text(s[0, 0], s[1, 0], s[2, 0], name,
                                    color=self.colors[i],
                                    transform=self.ax.transData + mpl.transforms.ScaledTranslation(0, r/4, self.fig.dpi_scale_trans),
                                    horizontalalignment='center',
                                    verticalalignment='bottom') for i, (s, r, name) in enumerate(zip(self.trajectories, self.sizes, self.names))]
-        self.scatters_goals = [self.ax.scatter(s[0], s[1], s[2], c=self.colors_goals[i]) for i, s in enumerate(self.goals)]
+        self.scatters_goals = [self.ax.scatter(s[0], s[1], s[2], color=self.colors_goals[i]) for i, s in enumerate(self.goals)]
         self.fig.show()
         self.anim = animation.FuncAnimation(self.fig, self._update_animation,
                                             frames=self.trajectories.shape[-1], interval=50, blit=False, repeat=True)
@@ -156,7 +160,7 @@ if __name__ == "__main__":
     goals = np.array([[1,1,1], [2,2,2]])
     colors_goals = np.array(["red", "black"])
 
-    Visual = visual(trajectories, # shape: (no_of_objects, 3, no_of_frames)
+    visual = Visual(trajectories, # shape: (no_of_objects, 3, no_of_frames)
                     names, # shape: (no_of_objects)
                     colors, # shape: (no_of_objects)
                     sizes, # shape: (no_of_objects)
@@ -164,7 +168,8 @@ if __name__ == "__main__":
                     colors_goals, # shape: (no_of_goals)
                     quality=8, # try 8 for low and 20 for high quality spheres
                     save_animation=False,
-                    trace_length=-1) # tail length in frames (0 for none and -1 for all)
+                    trace_length=-1, # tail length in frames (0 for none and -1 for all)
+                    speed=1)
 
                         
                         
