@@ -5,7 +5,7 @@ Created on Thu Apr 15 23:00:15 2021
 @author: PawelG
 """
 import numpy as np
-from simulator import Universe, Spacecraft
+from simulator import Universe, Spacecraft, Planet, Meteorite
 
 
 
@@ -13,6 +13,10 @@ from simulator import Universe, Spacecraft
 
 
 def example():
+    
+    # Spaceship needs arguments: name, start, goal, radius, vmax
+    # Planet needs arguments: name, loc, radius
+    # Meteorite needs arguments: name, start, goal, radius, vmax
 
     # uncomment spaceships to add them
     ship1 = Spacecraft("S1", [-1.5,-1.5,-1.5], [1,0,0], .2, 0.5)
@@ -22,6 +26,8 @@ def example():
     ship5 = Spacecraft("S5", [-1.5,0, 0], [0.5,0, 0], .2, 0.5)
     ship6 = Spacecraft("S6", [1.5,0, 0], [-1.75,-0, 0], .1, 0.5)
     # ship7 = Spacecraft("S7", [1,0.5, -0.25], [-1,-1,1.75], .3, 0.5)
+    planet1 = Planet("P1", [1,1,1], 1.)
+    meteorite1 = Meteorite("M1", [2,2,1.5], [-2,-2,1.75], .1, 1.5)
     universe = Universe()
     
     speed = 8

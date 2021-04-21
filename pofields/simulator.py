@@ -114,6 +114,54 @@ class Spacecraft(Object):
     def move(self):
         # move from current position to the next
         self.position = np.vstack((self.position, self.next))
+        
+class Planet(Object):
+    """A stationary planet in space. Derived from Object class"""
+    
+    obj_type = 'Planet'
+    
+    def __init__(self, name, loc, radius):
+        super().__init__(name, loc, [], radius, [])            
+    
+    def update(self, method="euler"):
+        # planet does not move, it stays at the same location
+        if method == "euler":
+            self.next = self.position[-1]
+        else:
+            pass
+        
+    def move(self):
+        # move from current position to the next
+        self.position = np.vstack((self.position, self.next))
+        
+class Meteorite(Object):
+    """A meteorite going in space on a straight line, undisturbed. Derived from Object class"""
+    
+    obj_type = 'Meteorite'
+    
+    def __init__(self, name, start, goal, radius, vmax):
+        super().__init__(name, start, goal, radius, vmax)
+    
+    def velocity(self, position):
+        direction = self.goal - self.start
+        return self.vmax * direction/np.linalg.norm(direction)       
+    
+    def update(self, method="euler"):
+        # if near goal, return goal
+        if np.linalg.norm(self.position[-1]-self.goal) < 0.01:
+            self.next = self.goal
+            return
+        
+        # update the next position from the current
+        if method == "euler":
+            v = self.velocity(self.position[-1])
+            self.next = self.position[-1] + dt*v
+        else:
+            pass
+        
+    def move(self):
+        # move from current position to the next
+        self.position = np.vstack((self.position, self.next))
 
 class Universe:
     
