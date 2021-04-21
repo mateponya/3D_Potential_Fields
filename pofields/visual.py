@@ -45,17 +45,9 @@ class Visual:
         self.goals = goals
         self.colors_goals = colors_goals
         self.trace_length = trace_length
-        # self.speed = int(speed)
         self.animation_frames = self.trajectories.shape[-1]
-        # print(self.animation_frames)
-        # print(self.trajectories.shape, trajectories.shape)
-        
-
-        
         self.show_progressbar = False
         
-        
-
         if save_animation:
             self.save_ani()
 
@@ -77,13 +69,17 @@ class Visual:
         return plots_objects
     
             
-    def start_animation(self):
+    def animate(self):
         self.fig = plt.figure()
-        self.ax = Axes3D(self.fig, proj_type="ortho") # "ortho" or "persp"
+        self.ax = Axes3D(self.fig, proj_type="persp", auto_add_to_figure=False) # "ortho" or "persp"
+        # self.ax = plt.axes(projection='3d')
         
+        self.fig.add_axes(self.ax)
         self.ax.set_xlim([-5, 5])
         self.ax.set_ylim([-5, 5])
         self.ax.set_zlim([-5, 5])
+        limits = self.ax.get_w_lims()
+        self.ax.set_box_aspect(aspect=(limits[1]-limits[0], limits[3]-limits[2], limits[5]-limits[4]))
         
         self.ax.set_xlabel('X axis')
         self.ax.set_ylabel('Y axis')
@@ -97,11 +93,10 @@ class Visual:
                                    transform=self.ax.transData + mpl.transforms.ScaledTranslation(0, r/4, self.fig.dpi_scale_trans),
                                    horizontalalignment='center',
                                    verticalalignment='bottom') for i, (s, r, name) in enumerate(zip(self.trajectories, self.sizes, self.names))]
-        self.scatters_goals = [self.ax.scatter(s[0], s[1], s[2], color=self.colors_goals[i]) for i, s in enumerate(self.goals)]
-        self.fig.show()
+        self.scatters_goals = [self.ax.scatter(s[0], s[1], s[2], color=self.colors_goals[i], alpha=.7) for i, s in enumerate(self.goals)]
         self.anim = animation.FuncAnimation(self.fig, self._update_animation,
                                             frames=self.trajectories.shape[-1], interval=50, blit=False, repeat=True)
-
+        plt.show()
 
         
     def _update_animation(self, i):
@@ -144,8 +139,8 @@ class Visual:
                                       self.sizes[i], color=self.colors[i],
                                       label=self.names[i], alpha=0.5))
             axes.add_artist(artists[i])
-            axes.plot(*self.trajectories[i, 0:2, :], color=self.colors[i], alpha=0.9, label=self.names[i])
-        
+            axes.plot(*self.trajectories[i, 0:2, :], color=self.colors[i], alpha=.9, label=self.names[i])
+            axes.scatter(*self.goals[i, 0:2], color=self.colors[i], alpha=0.7)
 
         
         axes.legend(handles=artists, bbox_to_anchor=(1.05, 1), loc='upper left')
@@ -219,7 +214,7 @@ if __name__ == "__main__":
                     trace_length=-1, # tail length in frames (0 for none and -1 for all)
                     speed=1)
     visual.plot2D()
-    # visual.start_animation()
+    # visual.animate()
 
                         
                         

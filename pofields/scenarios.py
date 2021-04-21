@@ -38,63 +38,60 @@ def example():
 
 
 
+def spaceships2_collinear():
+    Spacecraft("S1", [-1, 0, 0], [1, 0, 0], .5, 0.5)
+    Spacecraft("S1", [1, 0, 0], [-1, 0, 0], .5, 0.5)
+    universe = Universe()
+    speed = 8
+    return universe, speed
 
 
 
+def spaceships2_cross():
+    Spacecraft("S1", [-1, -1, 0], [1, 2, 0], .5, 0.5)
+    Spacecraft("S1", [1, -1, 0], [-1, 2, 0], .5, 0.5)
+    universe = Universe()
+    speed = 8
+    return universe, speed
 
 
 
+def spaceships3_hex1():
+    Spacecraft("S1", 2*np.array([-1, 0, 0]), 2*np.array([1, 0, 0]), .5, 0.5)
+    Spacecraft("S2", 2*np.array([np.cos(2*np.pi/3), np.sin(2*np.pi/3), 0]),
+               2*np.array([-np.cos(2*np.pi/3), -np.sin(2*np.pi/3), 0]), .5, 0.5)
+    Spacecraft("S3", 2*np.array([np.cos(np.pi/3), np.sin(np.pi/3), 0]),
+               2*np.array([-np.cos(np.pi/3), -np.sin(np.pi/3), 0]), .5, 0.5)
+    universe = Universe()
+    speed = 8
+    return universe, speed
 
 
 
+def spaceships3_hex2():
+    [a1, a2, a3] = np.pi*np.array([0, 1/3, 2/3])
+    da = np.pi*60/180
+    radius = 3
+    Spacecraft("S1", radius*np.array([np.cos(a1), np.sin(a1), 0]),
+               radius*np.array([-np.cos(a1+da), -np.sin(a1+da), 0]), .5, 0.5)
+    Spacecraft("S2", radius*np.array([np.cos(a2), np.sin(a2), 0]),
+               radius*np.array([-np.cos(a2+da), -np.sin(a2+da), 0]), .5, 0.5)
+    Spacecraft("S3", radius*np.array([np.cos(a3), np.sin(a3), 0]),
+               radius*np.array([-np.cos(a3+da), -np.sin(a3+da), 0]), .5, 0.5)
 
 
-
-
-
-
-
-# def spaceship_planet_sideways():
-#     """One spaceship and one planet in its way, not collinear"""
-#     spaceships = np.array([[-2, -2, -2]])
-#     spaceships_sizes = np.array([.2])
-#     goals = np.array([[2, 2, 2]])
+    # da=0
+    # Spacecraft("S1", radius*np.array([np.cos(a1), np.sin(a1), 0]),
+    #            radius*np.array([-np.cos(a1+da), -np.sin(a1+da), 0]), .5, 0.5)
+    # Spacecraft("S2", radius*np.array([np.cos(a2), np.sin(a2), 0]),
+    #            radius*np.array([-np.cos(a2+da), -np.sin(a2+da), 0]), .5, 0.5)
+    # Spacecraft("S3", radius*np.array([np.cos(a3), np.sin(a3), 0]),
+    #            radius*np.array([-np.cos(a3+da), -np.sin(a3+da), 0]), .5, 0.5)
     
-#     planets = np.array([[0, 0, 0.1]])
-#     planets_sizes = np.array([1])
+    universe = Universe()
+    speed = 8
+    return universe, speed
 
 
-# def spaceship_planet_collinear():
-#     """One spaceship and one planet in its way, collinear"""
-#     spaceships = np.array([[-2, -2, -2]])
-#     spaceships_sizes = np.array([.2])
-#     goals = np.array([[2, 2, 2]])
-    
-#     planets = np.array([[0, 0, 0]])
-#     planets_sizes = np.array([1])
 
 
-# def spaceships2_line():
-#     """2 spaceships on coliding course, collinear"""
-#     spaceships = np.array([[-2, -2, -2]])
-#     spaceships_sizes = np.array([.2])
-#     goals = np.array([[2, 2, 2]])
-
-
-# def spaceships2_cross():
-#     """2 spaceships on coliding course, not collinear"""
-#     spaceships = np.array([[-2, -2, -2], [-2, -2, 2]])
-#     spaceships_sizes = np.array([.2])
-#     goals = np.array([[1, 1, 1], [1, 1, -1]])
-
-
-# def spaceships_meteroid():
-#     """Spaceship on collision course with meteroid"""
-#     spaceships = np.array([[-2, 0, 0]])
-#     spaceships_sizes = np.array([.2])
-#     goals = np.array([[1, 0, 0]])
-    
-#     meteroids = np.array([3, 0, 0])
-#     meteroids_velocities = np.array([-1, 0, 0])
-
-    
