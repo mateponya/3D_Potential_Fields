@@ -50,21 +50,12 @@ class Visual:
         # print(self.animation_frames)
         # print(self.trajectories.shape, trajectories.shape)
         
-        self.fig = plt.figure()
-        self.ax = Axes3D(self.fig, proj_type="ortho") # "ortho" or "persp"
-        
-        self.ax.set_xlim([-5, 5])
-        self.ax.set_ylim([-5, 5])
-        self.ax.set_zlim([-5, 5])
-        
-        self.ax.set_xlabel('X axis')
-        self.ax.set_ylabel('Y axis')
-        self.ax.set_zlabel('Z axis')
+
         
         self.show_progressbar = False
         
         
-        self.start_animation()
+
         if save_animation:
             self.save_ani()
 
@@ -87,6 +78,17 @@ class Visual:
     
             
     def start_animation(self):
+        self.fig = plt.figure()
+        self.ax = Axes3D(self.fig, proj_type="ortho") # "ortho" or "persp"
+        
+        self.ax.set_xlim([-5, 5])
+        self.ax.set_ylim([-5, 5])
+        self.ax.set_zlim([-5, 5])
+        
+        self.ax.set_xlabel('X axis')
+        self.ax.set_ylabel('Y axis')
+        self.ax.set_zlabel('Z axis')
+        
         self.plots_objects = self._plot_objects(0)
         self.plots_trajectories = [self.ax.plot(s[0, 0:1], s[1, 0:1], s[2, 0:1], color=self.colors[i], alpha=.7)[0] for i, s in enumerate(self.trajectories)]
         self.plot_timer = self.ax.text2D(0.05, 0.95, "2D Text", transform=self.ax.transAxes)
@@ -128,6 +130,52 @@ class Visual:
 
         
         self.plots_objects = self._plot_objects(i)
+    
+    
+    def plot2D(self):
+        figure, axes = plt.subplots()
+        axes.set_aspect(1)
+        axes.set_xlim([-5, 5])
+        axes.set_ylim([-5, 5])
+        plt.title('Circle')
+        artists = []
+        for i in range(self.trajectories.shape[0]):
+            artists.append(plt.Circle(self.trajectories[i, 0:2, -1],
+                                      self.sizes[i], color=self.colors[i],
+                                      label=self.names[i], alpha=0.5))
+            axes.add_artist(artists[i])
+            axes.plot(*self.trajectories[i, 0:2, :], color=self.colors[i], alpha=0.9, label=self.names[i])
+        
+
+        
+        axes.legend(handles=artists, bbox_to_anchor=(1.05, 1), loc='upper left')
+        plt.xticks(np.arange(-5, 6 , 1))
+        plt.yticks(np.arange(-5, 6 , 1))
+        axes.grid()
+        
+    
+    def plot3D(self):
+        
+        self.fig = plt.figure()
+        self.ax = Axes3D(self.fig, proj_type="ortho") # "ortho" or "persp"
+        
+        self.ax.set_xlim([-5, 5])
+        self.ax.set_ylim([-5, 5])
+        self.ax.set_zlim([-5, 5])
+        
+        self.ax.set_xlabel('X axis')
+        self.ax.set_ylabel('Y axis')
+        self.ax.set_zlabel('Z axis')
+        
+        self.plots_objects = self._plot_objects(self.trajectories.shape[-1]-1)
+        self.plots_trajectories = [self.ax.plot(s[0], s[1], s[2], color=self.colors[i], alpha=.7)[0] for i, s in enumerate(self.trajectories)]
+        self.plot_timer = self.ax.text2D(0.05, 0.95, "2D Text", transform=self.ax.transAxes)
+        self.texts = [self.ax.text(s[0, 0], s[1, 0], s[2, 0], name,
+                                   color=self.colors[i],
+                                   transform=self.ax.transData + mpl.transforms.ScaledTranslation(0, r/4, self.fig.dpi_scale_trans),
+                                   horizontalalignment='center',
+                                   verticalalignment='bottom') for i, (s, r, name) in enumerate(zip(self.trajectories, self.sizes, self.names))]
+        # self.scatters_goals = [self.ax.scatter(s[0], s[1], s[2], color=self.colors_goals[i]) for i, s in enumerate(self.goals)]
 
   
         
@@ -170,6 +218,8 @@ if __name__ == "__main__":
                     save_animation=False,
                     trace_length=-1, # tail length in frames (0 for none and -1 for all)
                     speed=1)
+    visual.plot2D()
+    # visual.start_animation()
 
                         
                         
