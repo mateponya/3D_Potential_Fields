@@ -19,6 +19,7 @@ mpl.rcParams['animation.ffmpeg_path'] = ffmpeg_file_location()
 #this will primarly increase relative size of text and window
 plt.rcParams["figure.figsize"] = (8, 4.5)
 plt.rcParams["figure.dpi"] = 200
+plt.rcParams['axes.axisbelow'] = True
 
 
 
@@ -133,6 +134,10 @@ class Visual:
         axes.set_xlim([-5, 5])
         axes.set_ylim([-5, 5])
         plt.title('Circle')
+        plt.xticks(np.arange(-5, 6 , 1))
+        plt.yticks(np.arange(-5, 6 , 1))
+        axes.grid()
+
         artists = []
         for i in range(self.trajectories.shape[0]):
             artists.append(plt.Circle(self.trajectories[i, 0:2, -1],
@@ -140,14 +145,14 @@ class Visual:
                                       label=self.names[i], alpha=0.5))
             axes.add_artist(artists[i])
             axes.plot(*self.trajectories[i, 0:2, :], color=self.colors[i], alpha=.9, label=self.names[i])
-            axes.scatter(*self.goals[i, 0:2], color=self.colors[i], alpha=0.7)
+        
+
+        for i in range(self.goals.shape[0]):
+            axes.scatter(*self.goals[i, 0:2], color=self.colors_goals[i])
 
         
         axes.legend(handles=artists, bbox_to_anchor=(1.05, 1), loc='upper left')
-        plt.xticks(np.arange(-5, 6 , 1))
-        plt.yticks(np.arange(-5, 6 , 1))
-        axes.grid()
-        
+
     
     def plot3D(self):
         
@@ -173,7 +178,9 @@ class Visual:
         # self.scatters_goals = [self.ax.scatter(s[0], s[1], s[2], color=self.colors_goals[i]) for i, s in enumerate(self.goals)]
 
   
-        
+    def _save_plot(self):
+        self.fig.set_size_inches(1, 1)
+        self.fig.savefig("lol.tiff", format="tiff")
         
     def save_ani(self, file_type="mp4"):
         if file_type not in ["gif", "mp4"]:
@@ -216,5 +223,6 @@ if __name__ == "__main__":
     visual.plot2D()
     # visual.animate()
 
-                        
+
+    plt.show()
                         
