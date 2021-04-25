@@ -18,8 +18,6 @@ import scenarios
 # universe, animation_speed = scenarios.spaceships2_cross()
 # universe, animation_speed = scenarios.spaceships3_hex1()
 # universe, animation_speed = scenarios.spaceships3_hex2()
-# universe, animation_speed = scenarios.spaceships2_collinear()
-# universe, animation_speed = scenarios.spaceships2_collinear()
 universe, animation_speed = scenarios.spaceships4_stell_octa()
 
 

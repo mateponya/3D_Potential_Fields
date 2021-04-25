@@ -37,8 +37,8 @@ def example():
 
 
 def spaceships2_collinear():
-    Spacecraft("S1", [-1, 0, 0], [1, 0, 0], .5, 0.5)
-    Spacecraft("S1", [1, 0, 0], [-1, 0, 0], .5, 0.5)
+    Spacecraft("S1", [-3, 0, 0], [3, 0, 0], .5, 0.5)
+    Spacecraft("S1", [3, 0, 0], [-3, 0, 0], 1.5, 0.5)
     universe = Universe()
     speed = 8
     return universe, speed
@@ -47,7 +47,7 @@ def spaceships2_collinear():
 
 def spaceships2_cross():
     Spacecraft("S1", [-1, -1, 0], [1, 2, 0], .5, 0.5)
-    Spacecraft("S1", [1, -1, 0], [-1, 2, 0], .5, 0.5)
+    Spacecraft("S1", [1, -1, 0], [-1, 2, 0], 1, 0.5)
     universe = Universe()
     speed = 8
     return universe, speed
