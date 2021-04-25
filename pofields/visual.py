@@ -170,7 +170,7 @@ class Visual:
         self.plots_objects = self._plot_objects(self.trajectories.shape[-1]-1)
         self.plots_trajectories = [self.ax.plot(s[0], s[1], s[2], color=self.colors[i], alpha=.7)[0] for i, s in enumerate(self.trajectories)]
         self.plot_timer = self.ax.text2D(0.05, 0.95, "2D Text", transform=self.ax.transAxes)
-        self.texts = [self.ax.text(s[0, 0], s[1, 0], s[2, 0], name,
+        self.texts = [self.ax.text(s[0, -1], s[1, -1], s[2, -1], name,
                                    color=self.colors[i],
                                    transform=self.ax.transData + mpl.transforms.ScaledTranslation(0, r/4, self.fig.dpi_scale_trans),
                                    horizontalalignment='center',
@@ -220,7 +220,7 @@ if __name__ == "__main__":
                     save_animation=False,
                     trace_length=-1, # tail length in frames (0 for none and -1 for all)
                     speed=1)
-    visual.plot2D()
+    visual.plot3D()
     # visual.animate()
 
 
