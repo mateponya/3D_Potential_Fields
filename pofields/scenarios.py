@@ -36,11 +36,9 @@ def example():
 
 
 
-
-
 def spaceships2_collinear():
-    Spacecraft("S1", [-1, 0, 0], [1, 0, 0], .5, 0.5)
-    Spacecraft("S1", [1, 0, 0], [-1, 0, 0], .5, 0.5)
+    Spacecraft("S1", [-3, 0, 0], [3, 0, 0], .5, 0.5)
+    Spacecraft("S1", [3, 0, 0], [-3, 0, 0], 1.5, 0.5)
     universe = Universe()
     speed = 8
     return universe, speed
@@ -49,7 +47,7 @@ def spaceships2_collinear():
 
 def spaceships2_cross():
     Spacecraft("S1", [-1, -1, 0], [1, 2, 0], .5, 0.5)
-    Spacecraft("S1", [1, -1, 0], [-1, 2, 0], .5, 0.5)
+    Spacecraft("S1", [1, -1, 0], [-1, 2, 0], 1, 0.5)
     universe = Universe()
     speed = 8
     return universe, speed
@@ -92,6 +90,23 @@ def spaceships3_hex2():
     speed = 8
     return universe, speed
 
+def spaceships4_stell_octa():
+    "4 spaceships in a tetrahedral arrangement, each going through the centre"
+    magnitude = 6
+    Spacecraft("S1", magnitude*np.array([0, 0,   np.sqrt(2/3) - 1/(2*np.sqrt(6))]),
+                     magnitude*np.array([0, 0, -(np.sqrt(2/3) - 1/(2*np.sqrt(6)))]), 0.3, 0.5)
+    Spacecraft("S2", magnitude*np.array([-1/(2*np.sqrt(3)), -1/2, -1/(2*np.sqrt(6))]),
+                     magnitude*np.array([ 1/(2*np.sqrt(3)),  1/2,  1/(2*np.sqrt(6))]), 0.3, 0.5)
+    Spacecraft("S3", magnitude*np.array([-1/(2*np.sqrt(3)),  1/2, -1/(2*np.sqrt(6))]),
+                     magnitude*np.array([ 1/(2*np.sqrt(3)), -1/2,  1/(2*np.sqrt(6))]), 0.3, 0.5)
+    Spacecraft("S4", magnitude*np.array([ 1/np.sqrt(3), 0, -1/(2*np.sqrt(6))]),
+                     magnitude*np.array([-1/np.sqrt(3), 0,  1/(2*np.sqrt(6))]), 0.3, 0.5)
+    
+    universe = Universe()
+    speed = 8
+    
+    return universe, speed
 
+ 
 
 

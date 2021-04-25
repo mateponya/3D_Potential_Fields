@@ -17,7 +17,7 @@ import time
 
 WALL_OFFSET = 2.
 dt = 0.01
-T = 10
+T = 20
 
 class Object:
     """The basic unit in the space"""
@@ -69,6 +69,7 @@ class Spacecraft(Object):
         v_goal = self.velocity_to_goal(position)
         v_obst = self.velocity_from_obstacles(position)
         v = v_goal + v_obst
+        v += np.random.rand(3) * self.vmax / 3
         
         def cap(v):
             n = np.linalg.norm(v)
@@ -88,13 +89,22 @@ class Spacecraft(Object):
     
     def velocity_from_obstacles(self, position):
         v = np.zeros(3)
-        current = self.position.shape[0]-1
         for obst in (obj for obj in Universe.objects if obj is not self):
-        # for obst in Universe.objects if obj is not self:
-            dist = np.linalg.norm(obst.position[current] - position)
-            # scale = norm.pdf(dist, loc=0, scale=obst.radius*self.vmax) / norm.pdf(0, loc=0, scale=obst.radius*self.vmax)
-            scale = norm.pdf(dist, loc=0, scale=np.sum((self.radius, obst.radius)))
-            v += scale * (position - obst.position[current])/dist
+            dist = np.linalg.norm(obst.position[-1] - position)
+            spread = np.mean((self.vmax, obst.vmax)) * np.sum((self.radius, obst.radius))
+            scale = norm.pdf(dist, loc=0, scale=spread) * self.vmax / norm.pdf(sum((self.radius,obst.radius)), loc=0, scale=spread)
+            v += scale * (position - obst.position[-1])/dist
+            d_goal = self.goal - position
+            d_obst = obst.position[-1] - position
+            bearing = np.dot(d_goal, d_obst)/np.linalg.norm(d_goal)/np.linalg.norm(d_obst)
+            if  0 < bearing and bearing < 1:
+                perp = d_obst - np.dot(d_obst,d_goal)/np.dot(d_goal,d_goal)*d_goal
+                u_perp = perp / np.linalg.norm(perp)
+                v += - u_perp * 1/dist / 4
+            # perp = d_obst - np.dot(d_obst,d_goal)/np.dot(d_goal,d_goal)*d_goal
+            # if np.linalg.norm(perp) > 0:
+            #     u_perp = perp / np.linalg.norm(perp)
+            #     v += - u_perp * 1/dist / 4
         return v
             
     
