@@ -14,11 +14,14 @@ import scenarios
 
 
 # universe, animation_speed = scenarios.example()
-universe, animation_speed = scenarios.spaceships2_collinear()
+# universe, animation_speed = scenarios.spaceships2_collinear()
 # universe, animation_speed = scenarios.spaceships2_cross()
 # universe, animation_speed = scenarios.spaceships3_hex1()
 # universe, animation_speed = scenarios.spaceships3_hex2()
 # universe, animation_speed = scenarios.spaceships4_stell_octa()
+# universe, animation_speed = scenarios.planets_in_line()
+# universe, animation_speed = scenarios.planets_in_line_zigzag()
+universe, animation_speed = scenarios.multi_meteor_line()
 
 
 
