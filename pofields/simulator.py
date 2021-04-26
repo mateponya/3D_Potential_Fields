@@ -99,8 +99,9 @@ class Spacecraft(Object):
             bearing = np.dot(d_goal, d_obst)/np.linalg.norm(d_goal)/np.linalg.norm(d_obst)
             if  0 < bearing and bearing < 1:
                 perp = d_obst - np.dot(d_obst,d_goal)/np.dot(d_goal,d_goal)*d_goal
-                u_perp = perp / np.linalg.norm(perp)
-                v += - u_perp * 1/dist / 4
+                if np.linalg.norm(perp) > 0:
+                    u_perp = perp / np.linalg.norm(perp)
+                    v += - u_perp * 1/dist / 4
             # perp = d_obst - np.dot(d_obst,d_goal)/np.dot(d_goal,d_goal)*d_goal
             # if np.linalg.norm(perp) > 0:
             #     u_perp = perp / np.linalg.norm(perp)
