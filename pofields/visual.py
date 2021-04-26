@@ -157,7 +157,8 @@ class Visual:
     def plot3D(self):
         
         self.fig = plt.figure()
-        self.ax = Axes3D(self.fig, proj_type="ortho") # "ortho" or "persp"
+        self.ax = Axes3D(self.fig, proj_type="ortho", auto_add_to_figure=False) # "ortho" or "persp"
+        self.fig.add_axes(self.ax)
         
         self.ax.set_xlim([-5, 5])
         self.ax.set_ylim([-5, 5])

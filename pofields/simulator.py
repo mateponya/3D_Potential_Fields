@@ -69,7 +69,7 @@ class Spacecraft(Object):
         v_goal = self.velocity_to_goal(position)
         v_obst = self.velocity_from_obstacles(position)
         v = v_goal + v_obst
-        v += np.random.rand(3) * self.vmax / 3
+        # v += np.random.rand(3) * self.vmax / 3
         
         def cap(v):
             n = np.linalg.norm(v)
