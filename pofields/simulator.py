@@ -4,7 +4,7 @@ Created on Wed Apr  7 12:04:38 2021
 
 @author: Mate
 """
-
+from scipy.spatial.transform import Rotation
 import numpy as np
 from scipy.stats import norm
 import matplotlib.pyplot as plt
@@ -90,21 +90,29 @@ class Spacecraft(Object):
     def velocity_from_obstacles(self, position):
         v = np.zeros(3)
         for obst in (obj for obj in Universe.objects if obj is not self):
+            # v Pawel
             dist = np.linalg.norm(obst.position[-1] - position)
-            spread = np.mean((self.vmax, obst.vmax)) * np.sum((self.radius, obst.radius))
-            scale = norm.pdf(dist, loc=0, scale=spread) * self.vmax / norm.pdf(sum((self.radius,obst.radius)), loc=0, scale=spread)
-            v += scale * (position - obst.position[-1])/dist
-            d_goal = self.goal - position
-            d_obst = obst.position[-1] - position
-            bearing = np.dot(d_goal, d_obst)/np.linalg.norm(d_goal)/np.linalg.norm(d_obst)
-            if  0 < bearing and bearing < 1:
-                perp = d_obst - np.dot(d_obst,d_goal)/np.dot(d_goal,d_goal)*d_goal
-                u_perp = perp / np.linalg.norm(perp)
-                v += - u_perp * 1/dist / 4
-            # perp = d_obst - np.dot(d_obst,d_goal)/np.dot(d_goal,d_goal)*d_goal
-            # if np.linalg.norm(perp) > 0:
+            dist_norm = (obst.position[-1] - position)/dist
+            v_delta = np.clip(1 - np.tanh(4*(dist - obst.radius - self.radius - .1)), 0, 1) * self.vmax
+            v += -v_delta * dist_norm
+            rot = Rotation.from_rotvec(np.array([0, 0, 90])*np.pi/180).as_matrix()
+            v += np.dot(v_delta * dist_norm, rot)
+            # v Mate
+            # dist = np.linalg.norm(obst.position[-1] - position)
+            # spread = np.mean((self.vmax, obst.vmax)) * np.sum((self.radius, obst.radius))
+            # scale = norm.pdf(dist, loc=0, scale=spread) * self.vmax / norm.pdf(sum((self.radius,obst.radius)), loc=0, scale=spread)
+            # v += scale * (position - obst.position[-1])/dist
+            # d_goal = self.goal - position
+            # d_obst = obst.position[-1] - position
+            # bearing = np.dot(d_goal, d_obst)/np.linalg.norm(d_goal)/np.linalg.norm(d_obst)
+            # if  0 < bearing and bearing < 1:
+            #     perp = d_obst - np.dot(d_obst,d_goal)/np.dot(d_goal,d_goal)*d_goal
             #     u_perp = perp / np.linalg.norm(perp)
             #     v += - u_perp * 1/dist / 4
+            # # perp = d_obst - np.dot(d_obst,d_goal)/np.dot(d_goal,d_goal)*d_goal
+            # # if np.linalg.norm(perp) > 0:
+            # #     u_perp = perp / np.linalg.norm(perp)
+            # #     v += - u_perp * 1/dist / 4
         return v
             
     

@@ -17,7 +17,7 @@ import datetime
 
 mpl.rcParams['animation.ffmpeg_path'] = ffmpeg_file_location()
 #this will primarly increase relative size of text and window
-plt.rcParams["figure.figsize"] = (8, 4.5)
+plt.rcParams["figure.figsize"] = (4, 4)
 plt.rcParams["figure.dpi"] = 200
 plt.rcParams['axes.axisbelow'] = True
 
@@ -133,7 +133,7 @@ class Visual:
         axes.set_aspect(1)
         axes.set_xlim([-5, 5])
         axes.set_ylim([-5, 5])
-        plt.title('Circle')
+        plt.title('')
         plt.xticks(np.arange(-5, 6 , 1))
         plt.yticks(np.arange(-5, 6 , 1))
         axes.grid()
@@ -151,7 +151,8 @@ class Visual:
             axes.scatter(*self.goals[i, 0:2], color=self.colors_goals[i])
 
         
-        axes.legend(handles=artists, bbox_to_anchor=(1.05, 1), loc='upper left')
+        # axes.legend(handles=artists, bbox_to_anchor=(1.05, 1), loc='upper left')
+        axes.legend(handles=artists)
 
     
     def plot3D(self):
