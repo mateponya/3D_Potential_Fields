@@ -15,9 +15,9 @@ from locators import ffmpeg_file_location
 mpl.rcParams['animation.ffmpeg_path'] = ffmpeg_file_location()
 import time
 
-WALL_OFFSET = 2.
+WALL_OFFSET = 5.
 dt = 0.01
-T = 20
+T = 15
 
 class Object:
     """The basic unit in the space"""
@@ -69,7 +69,7 @@ class Spacecraft(Object):
         v_goal = self.velocity_to_goal(position)
         v_obst = self.velocity_from_obstacles(position)
         v = v_goal + v_obst
-        # v += np.random.rand(3) * self.vmax / 3
+        v += np.random.rand(3) * self.vmax / 3
         
         def cap(v):
             n = np.linalg.norm(v)
@@ -99,8 +99,9 @@ class Spacecraft(Object):
             bearing = np.dot(d_goal, d_obst)/np.linalg.norm(d_goal)/np.linalg.norm(d_obst)
             if  0 < bearing and bearing < 1:
                 perp = d_obst - np.dot(d_obst,d_goal)/np.dot(d_goal,d_goal)*d_goal
-                u_perp = perp / np.linalg.norm(perp)
-                v += - u_perp * 1/dist / 4
+                if np.linalg.norm(perp) > 0:
+                    u_perp = perp / np.linalg.norm(perp)
+                    v += - u_perp * 1/dist / 4
             # perp = d_obst - np.dot(d_obst,d_goal)/np.dot(d_goal,d_goal)*d_goal
             # if np.linalg.norm(perp) > 0:
             #     u_perp = perp / np.linalg.norm(perp)
@@ -131,7 +132,7 @@ class Planet(Object):
     obj_type = 'Planet'
     
     def __init__(self, name, loc, radius):
-        super().__init__(name, loc, [], radius, [])            
+        super().__init__(name, loc, loc, radius, 0)            
     
     def update(self, method="euler"):
         # planet does not move, it stays at the same location
@@ -158,9 +159,9 @@ class Meteorite(Object):
     
     def update(self, method="euler"):
         # if near goal, return goal
-        if np.linalg.norm(self.position[-1]-self.goal) < 0.01:
-            self.next = self.goal
-            return
+        # if np.linalg.norm(self.position[-1]-self.goal) < 0.01:
+        #     self.next = self.goal
+        #     return
         
         # update the next position from the current
         if method == "euler":
