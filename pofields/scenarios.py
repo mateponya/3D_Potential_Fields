@@ -5,7 +5,8 @@ Created on Thu Apr 15 23:00:15 2021
 @author: PawelG
 """
 import numpy as np
-from simulator import Universe, Spacecraft, Planet, Meteorite
+# from simulator import Universe, Spacecraft, Planet, Meteorite
+from simulator2 import Universe, Spacecraft, Planet, Meteorite
 
 
 
@@ -40,7 +41,7 @@ def spaceships2_collinear():
     Spacecraft("S1", [-3, 0, 0], [3, 0, 0], .5, 0.5)
     Spacecraft("S2", [3, 0, 0], [-3, 0, 0], 1.5, 0.5)
     universe = Universe()
-    speed = 8
+    speed = 20
     return universe, speed
 
 

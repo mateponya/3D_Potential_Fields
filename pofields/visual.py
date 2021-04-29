@@ -17,7 +17,7 @@ import datetime
 
 mpl.rcParams['animation.ffmpeg_path'] = ffmpeg_file_location()
 #this will primarly increase relative size of text and window
-plt.rcParams["figure.figsize"] = (8, 4.5)
+plt.rcParams["figure.figsize"] = (6,6)
 plt.rcParams["figure.dpi"] = 200
 plt.rcParams['axes.axisbelow'] = True
 
@@ -164,13 +164,13 @@ class Visual:
         self.ax.set_ylim([-5, 5])
         self.ax.set_zlim([-5, 5])
         
-        self.ax.set_xlabel('X axis')
-        self.ax.set_ylabel('Y axis')
-        self.ax.set_zlabel('Z axis')
+        # self.ax.set_xlabel('X axis')
+        # self.ax.set_ylabel('Y axis')
+        # self.ax.set_zlabel('Z axis')
         
         self.plots_objects = self._plot_objects(self.trajectories.shape[-1]-1)
         self.plots_trajectories = [self.ax.plot(s[0], s[1], s[2], color=self.colors[i], alpha=.7)[0] for i, s in enumerate(self.trajectories)]
-        self.plot_timer = self.ax.text2D(0.05, 0.95, "2D Text", transform=self.ax.transAxes)
+        self.plot_timer = self.ax.text2D(0.05, 0.95, "", transform=self.ax.transAxes)
         self.texts = [self.ax.text(s[0, -1], s[1, -1], s[2, -1], name,
                                    color=self.colors[i],
                                    transform=self.ax.transData + mpl.transforms.ScaledTranslation(0, r/4, self.fig.dpi_scale_trans),
