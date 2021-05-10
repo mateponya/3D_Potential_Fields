@@ -169,7 +169,7 @@ class Visual:
         self.ax.set_zlabel('Z axis')
         
         self.plots_objects = self._plot_objects(self.trajectories.shape[-1]-1)
-        self.plots_trajectories = [self.ax.plot(s[0], s[1], s[2], color=self.colors[i], alpha=.7)[0] for i, s in enumerate(self.trajectories)]
+        self.plots_trajectories = [self.ax.plot(s[0], s[1], s[2], color=self.colors[i], alpha=0.7)[0] for i, s in enumerate(self.trajectories)]
         self.plot_timer = self.ax.text2D(0.05, 0.95, "2D Text", transform=self.ax.transAxes)
         self.texts = [self.ax.text(s[0, -1], s[1, -1], s[2, -1], name,
                                    color=self.colors[i],

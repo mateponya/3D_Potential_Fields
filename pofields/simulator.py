@@ -17,7 +17,7 @@ import time
 
 WALL_OFFSET = 5.
 dt = 0.01
-T = 15
+T = 30
 
 class Object:
     """The basic unit in the space"""
@@ -69,7 +69,8 @@ class Spacecraft(Object):
         v_goal = self.velocity_to_goal(position)
         v_obst = self.velocity_from_obstacles(position)
         v = v_goal + v_obst
-        v += np.random.rand(3) * self.vmax / 3
+        # v += np.random.rand(3) * self.vmax / 3
+        v += np.random.uniform(-1,1,3) * self.vmax / 0.75
         
         def cap(v):
             n = np.linalg.norm(v)

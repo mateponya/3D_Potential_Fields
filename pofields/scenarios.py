@@ -40,7 +40,7 @@ def spaceships2_collinear():
     Spacecraft("S1", [-3, 0, 0], [3, 0, 0], .5, 0.5)
     Spacecraft("S2", [3, 0, 0], [-3, 0, 0], 1.5, 0.5)
     universe = Universe()
-    speed = 8
+    speed = 16
     return universe, speed
 
 
@@ -49,7 +49,7 @@ def spaceships2_cross():
     Spacecraft("S1", [-3, -3, 0], [3, 3, 0], .5, 0.5)
     Spacecraft("S2", [3, -3, 0], [-3, 3, 0], 1.5, 0.5)
     universe = Universe()
-    speed = 8
+    speed = 16
     return universe, speed
 
 
@@ -103,7 +103,7 @@ def spaceships4_stell_octa():
                      magnitude*np.array([-1/np.sqrt(3), 0,  1/(2*np.sqrt(6))]), 1.25, 0.5)
     
     universe = Universe()
-    speed = 8
+    speed = 25
     
     return universe, speed
 
@@ -114,7 +114,7 @@ def planets_in_line():
     Planet("P3", [-2.5, 0, 0], 1.)
     
     universe = Universe()
-    speed = 8
+    speed = 16
     
     return universe, speed
 
@@ -133,25 +133,16 @@ def planets_in_line_zigzag():
     Planet("P11", [-2.5, 0, 0], 1.5)
     
     universe = Universe()
-    speed = 8
+    speed = 16
     
     return universe, speed
 
 def multi_meteor_line():
     ship1 = Spacecraft("S1", np.array([4.5, 0, 0]), np.array([-4.5, 0, 0]), 0.3, 0.5)
-    # Meteorite("M1", np.array([4.5, 3, 3]), np.array([-4.5, -1, -2]), 0.1, 3)
-    # Meteorite("M2", np.array([4.5, 2, 3]), np.array([-3.5, -3, -2]), 0.1, 3)
-    # Meteorite("M3", np.array([4.5, 3, 3]), np.array([-1.5, -1, -2]), 0.1, 3)
-    # Meteorite("M4", np.array([-2.5, 3, 3]), np.array([4.5, -1, -2]), 0.1, 3)
-    # Meteorite("M5", np.array([2.5, 4, 4]), np.array([-1.5, -3, -2]), 0.1, 2.5)
-    # Meteorite("M6", np.array([2.5, -4, 4]), np.array([-3.5, 4, -4]), 0.1, 3.5)
-    # Meteorite("M7", np.array([-2.5, -3, -3]), np.array([-2.5, 3, 3]), 0.1, 1.5)
-    # Meteorite("M8", np.array([-4.5, 3, 3]), np.array([3.5, -1, -2]), 0.1, 3)
-    # Meteorite("M9", np.array([-4.5, 3, 3]), np.array([3.5, -2, -2]), 0.1, 3)
-    # Meteorite("M10", np.array([-4.5, 3, 3]), np.array([3.5, -1, -1]), 0.1, 3)
     for n in range(5):
         pos = np.random.uniform(-6.0, 6.0, 3)
-        heading = (ship1.start+(ship1.goal-ship1.start)*np.random.rand())-pos
+        # heading = (ship1.start+(ship1.goal-ship1.start)*np.random.rand())-pos
+        heading = (ship1.start+(ship1.goal-ship1.start)/2)-pos
         # dir1 = np.random.rand(3)
         # dir1 -= dir1.dot(heading) * heading
         dir1 = np.cross(heading, np.array([1,0,0]))
@@ -160,8 +151,8 @@ def multi_meteor_line():
         dir2 /= np.linalg.norm(dir2)
         for i in range(5):
             rand_heading = pos + 10*heading + 50*(np.random.uniform(-1,1)*dir1 + np.random.uniform(-1,1)*dir2)
-            Meteorite("M"+str(n+i), pos, rand_heading, 0.1, np.random.rand()*3+0.5)
+            Meteorite("M"+str(n+i), pos, rand_heading, 0.1, np.random.rand()*2+0.5)
     universe = Universe()
-    speed = 8
+    speed = 25
     
     return universe, speed
