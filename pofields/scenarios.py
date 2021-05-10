@@ -5,7 +5,8 @@ Created on Thu Apr 15 23:00:15 2021
 @author: PawelG
 """
 import numpy as np
-from simulator import Universe, Spacecraft, Planet, Meteorite
+# from simulator import Universe, Spacecraft, Planet, Meteorite
+from simulator2 import Universe, Spacecraft, Planet, Meteorite
 
 
 
