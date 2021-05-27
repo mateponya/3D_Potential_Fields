@@ -12,8 +12,9 @@ Planets and meteorites do not change their position, heading or velocity if they
 
 - `potfields/randomised.py and vortex.py` contain the two navigation algorithms.
 - `potfields/scenarios.py` contains the scenarios with the locations, goals etc. of all objects in space. The navigation algorithm can be set in the header.
-- `potfields/simulator.py and main.py` runs the simulation of a selected scenrio and plots the result. These plots range from the final result showing the trajectories of each of the objects to an `.mp4` video showing the whole process.
+- `potfields/main.py` runs the simulation of a selected scenrio and plots the result. These plots range from the final result showing the trajectories of each of the objects to an `.mp4` video showing the whole process.
 - `potfields/visual.py` does the job of showing the results in the desired form.
+- `potfields/locator.py` manages video creation.
 
 
 
