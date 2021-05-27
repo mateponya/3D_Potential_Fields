@@ -1,4 +1,4 @@
-# 3D Potential Fields Navigation
+# 3D Potential Field Navigation
 A simulation environment for dynamic heterogeneous multi-agent potential field navigation.
 
 ## Overview
